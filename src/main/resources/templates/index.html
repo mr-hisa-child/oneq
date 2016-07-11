@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
+<!-- <link rel="stylesheet" th:href="@{  /css/bootstrap.min.css}" href="/css/bootstrap.min.css"/> -->
+<title>ONE-Q</title>
+<style>
+body {
+  padding-top: 100px;
+}
+.starter-template {
+  padding: 40px 15px;
+  text-align: center;
+}
+</style>
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">ONE-Q</a>
+        </div>
+    </div>
+</nav>
+<div class="container">
+
+<form role="form" th:action="@{/create}" th:object="${signupForm}" method="post">
+    <div class="form-group">
+        <label for="path">コンテンツURL</label>
+        <div class="input-group">
+            <span class="input-group-addon" id="basic-addon3" th:text="${url}"></span>
+            <input type="text" class="form-control" th:field="*{path}" name="path" id="path"/>
+		</div>
+    </div>
+    <div class="form-group">
+        <label for="adminPass">管理パスワード</label>
+        <input type="password" th:field="*{adminPass}" class="form-control" name="adminPass" id="adminPass"/>
+    </div>
+    <button type="submit" class="btn btn-default">作成</button>
+</form>
+</div>
+<script th:src="@{/webjars/jquery/3.0.0/jquery.min.js}"></script>
+</body>
+</html>

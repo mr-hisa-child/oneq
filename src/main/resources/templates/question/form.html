@@ -1,77 +1,47 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<head>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
-<title>ONE-Q</title>
-<style>
-body {
-  padding-top: 100px;
-}
-.starter-template {
-  padding: 40px 15px;
-  text-align: center;
-}
-</style>
-</head>
-<body>
-<nav class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="#">ONE-Q</a>
-        </div>
-    </div>
-</nav>
-<div class="container">
- <form role="form" th:action="@{create}" th:object="${questionForm}" method="post">
-    <div class="form-group">
-        <label for="content">質問内容</label>
-        <textarea th:field="*{content}" name="content" id="content" class="form-control"></textarea>
-    </div>
-    <div class="form-group">
-        <label for="pass">回答パスワード</label>
-        <input type="password" th:field="*{pass}" name="pass" id="pass" class="form-control"/>
-    </div>
-    <div class="form-group">
-        <label for="createUser">作成者</label>
-        <input type="text" th:field="*{createUser}" name="createUser" id="createUser" class="form-control"/>
-    </div>
-    <div class="form-group">
-        <label for="deadline">回答期限</label>
-        <input type="date" th:field="*{deadline}" name="deadline" id="deadline" class="form-control"/>
-    </div>
-    <div class="checkbox">
-        <label>
-            <input type="checkbox" value="on" th:field="*{isMulti}"/> 複数選択
-        </label>
-    </div>
-    <div class="checkbox">
-        <label>
-            <input type="checkbox" value="on" th:field="*{userRequired}"/> 回答者氏名入力
-        </label>
-    </div>
-    
-    <a href="javascript:void(0)" id="btnAdd">選択肢追加</a>
-    <div id="choice">
-	    <div class="form-group" th:each="item : *{choices}">
-            <div class="input-group">
-                <input type="text" th:value="${item}" th:field="*{choices}" name="choices" class="form-control"/>
-                <span class="input-group-btn"><button class="btn btn-danger" type="button">削除</button></span>
-            </div>
-	    </div>
-    </div>
-    <button type="submit" class="btn btn-success">登録</button>
-</form>
+<div layout:decorator="layout">
+    <th:block layout:fragment="layout-content">
+		<div class="row">
+    		<div class="col-xs-offset-2 col-xs-8">
+				 <form role="form" th:action="@{/question/update}" th:object="${questionForm}" method="post">
+				    <div class="form-group">
+				        <label for="content">質問内容</label>
+				        <textarea th:field="*{content}" name="content" id="content" class="form-control"></textarea>
+				        <p th:if="${#fields.hasErrors('content')}" th:errors="*{content}" class="text-danger"></p>
+				    </div>
+				    
+				    <p th:if="${#fields.hasErrors('choices')}" th:errors="*{choices}" class="text-danger"></p>
+				    <div id="choice">
+					    <div class="form-group" th:each="item : *{choices}">
+				            <div class="input-group">
+				                <input type="text" th:value="${item}" name="choices" class="form-control"/>
+				                <span class="input-group-btn"><button class="btn btn-danger btnDelete" type="button">削除</button></span>
+				            </div>
+					    </div>
+				    </div>
+				    <div>
+				    	<a href="javascript:void(0)" id="btnAdd">選択肢を追加する</a>
+				    </div>
+				    <div class="col-xs-offset-3 col-xs-6">
+				    	<button type="submit" class="btn btn-success btn-block">登録</button>
+				    </div>
+				</form>
+			</div>
+		</div>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+		<script>
+		$(function(){
+			var $item = $('<div class="form-group"><div class="input-group"><input type="text" name="choices" class="form-control"/><span class="input-group-btn"><button class="btn btn-danger btnDelete" type="button">削除</button></span></div></div>');
+			
+			// 選択肢追加ボタンクリック時
+			$('#btnAdd').click(function(){
+				$('#choice').append($item.clone());
+			});
+			
+			// 削除ボタンクリック時
+			$(document).on('click','button.btnDelete',function(){
+				$(this).closest('div.form-group').remove();
+			});
+		});
+		</script>
+	</th:block>
 </div>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-<script>
-$(function(){
-	$('#btnAdd').click(function(){
-		$('#choice').append($('<div class="form-group"><div class="input-group"><input type="text" name="choices" class="form-control"/><span class="input-group-btn"><button class="btn btn-danger" type="button">削除</button></span></div></div>'));
-	});
-});
-</script>
-<script>
-</script>
-</body>
-</html>

@@ -1,42 +1,25 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<head>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
-<title>ONE-Q</title>
-<style>
-body {
-  padding-top: 100px;
-}
-.starter-template {
-  padding: 40px 15px;
-  text-align: center;
-}
-</style>
-</head>
-<body>
-<nav class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="#">ONE-Q</a>
-        </div>
-    </div>
-</nav>
-<div class="container">
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3 class="panel-title">質問</h3>
-        </div>
-        <div class="panel-body" th:text="${question}" style="white-space: pre">
-        </div>
-    </div>
-    <form role="form" th:action="@{send}" th:object="${answerForm}" method="post">
-        <div class="checkbox" th:each="item : ${choices}">
-            <label>
-                <input type="checkbox" th:value="${item.key}" th:text="${item.value}" th:field="*{choices}"/>
-            </label>
-        </div>
-        <button type="submit" class="btn btn-success">送信</button>
-    </form>
+<div layout:decorator="layout">
+    <th:block layout:fragment="layout-content">
+    <div class="row">
+    		<div class="col-xs-offset-2 col-xs-8">
+			    <div class="panel panel-default">
+			        <div class="panel-heading">
+			            <h3 class="panel-title">質問</h3>
+			        </div>
+			        <div class="panel-body" th:text="${question}" style="white-space: pre">
+			        </div>
+			    </div>
+			    <form role="form" th:action="@{send}" th:object="${answerForm}" method="post">
+			        <div class="checkbox" th:each="item : ${choices}">
+			            <label>
+			                <input type="checkbox" th:value="${item.key}" th:text="${item.value}" th:field="*{choices}"/>
+			            </label>
+			        </div>
+			        <div class="col-xs-offset-3 col-xs-6">
+				    	<button type="submit" class="btn btn-success btn-block">送信</button>
+				    </div>
+			    </form>
+			</div>
+		</div>
+	</th:block>
 </div>
-</body>
-</html>

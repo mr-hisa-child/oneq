@@ -13,11 +13,20 @@ public class ChoiceService {
 	@Autowired
 	private ChoiceRepository choiceRepository;
 	
+	public List<Choice> findAll(Long questionId){
+		return this.choiceRepository.findByQuestionId(questionId);
+	}
+	
 	public void create(Choice entity){
 		this.choiceRepository.save(entity);
 	}
 	
 	public void craete(List<Choice> entitys){
 		this.choiceRepository.save(entitys);
+	}
+	
+	public void deleteAll(Long questionId){
+		List<Choice> choices = this.choiceRepository.findByQuestionId(questionId);
+		this.choiceRepository.delete(choices);
 	}
 }

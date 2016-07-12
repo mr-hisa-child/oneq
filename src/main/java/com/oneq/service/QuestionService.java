@@ -27,10 +27,6 @@ public class QuestionService {
 		return this.questionRepository.findByPath(path);
 	}
 	
-	public Question findByPathAndPass(final String path,final String pass){
-		return this.questionRepository.findByPathAndPass(path, pass);
-	}
-	
 	public Question create(Question entity){
 //		String path = RandomStringUtils.randomAlphanumeric(8);
 //		Question question = this.questionRepository.findByPath(path);

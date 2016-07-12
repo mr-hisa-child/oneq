@@ -6,5 +6,5 @@ import lombok.Data;
 
 @Data
 public class SigninForm {
-	private String pass;
+	private String path;
 }

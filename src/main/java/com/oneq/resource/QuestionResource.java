@@ -18,28 +18,28 @@ import com.oneq.service.QuestionService;
 @RestController
 public class QuestionResource {
 	
-	@Autowired
-    private QuestionService questionService;
-	
-//	@RequestMapping("/")
-//	public List<Question> find(){
-//		return questionService.findAll();
+//	@Autowired
+//    private QuestionService questionService;
+//	
+////	@RequestMapping("/")
+////	public List<Question> find(){
+////		return questionService.findAll();
+////	}
+//	
+//	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
+//	public Question find(@PathVariable Long id){
+//		return questionService.find(id);
 //	}
-	
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
-	public Question find(@PathVariable Long id){
-		return questionService.find(id);
-	}
-	
-	@RequestMapping(method = RequestMethod.POST)
-	public Question create(@RequestBody @Valid final Question question){
-//		questionService.save(question);
-		
-		return null;
-	}
-	
-	@RequestMapping(method = RequestMethod.PUT)
-	public Question update(@RequestBody @Valid final Question question){
-		return null;
-	}
+//	
+//	@RequestMapping(method = RequestMethod.POST)
+//	public Question create(@RequestBody @Valid final Question question){
+////		questionService.save(question);
+//		
+//		return null;
+//	}
+//	
+//	@RequestMapping(method = RequestMethod.PUT)
+//	public Question update(@RequestBody @Valid final Question question){
+//		return null;
+//	}
 }

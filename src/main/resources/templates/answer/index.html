@@ -1,38 +1,19 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<head>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
-<!-- <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/> -->
-<title>ONE-Q</title>
-<style>
-body {
-  padding-top: 100px;
-}
-.starter-template {
-  padding: 40px 15px;
-  text-align: center;
-}
-</style>
-</head>
-<body>
-<nav class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="#">ONE-Q</a>
-        </div>
-    </div>
-</nav>
-<div class="container">
-    <div class="alert alert-danger" th:text="${error}" th:if="${error}"></div>
-    <form role="form" th:action="@{answer}" th:object="${signinForm}" method="post">
-        <div class="form-group">
-            <label for="content">回答パスワード</label>
-            <input type="password" th:field="*{pass}" name="pass" id="pass" class="form-control"/>
-        </div>
-        <button type="submit" class="btn btn-primary">回答する</button>
-    </form>
+<div layout:decorator="layout">
+    <th:block layout:fragment="layout-content">
+    	<div class="alert alert-danger" th:text="${error}" th:if="${error}"></div>
+	    <div class="row">
+	    	<div class="col-xs-offset-3 col-xs-6">
+	    		<form role="form" th:action="@{/answer}" th:object="${signinForm}" method="post">
+			    	<div class="form-group">
+			            <label for="content">OneQコード</label>
+			            <input type="text" th:field="*{path}" name="path" id="path" class="form-control"/>
+			            <p th:if="${#fields.hasErrors('path')}" th:errors="*{path}" class="text-danger"></p>
+			        </div>
+			        <div class="col-xs-offset-3 col-xs-6">
+			        	<button type="submit" class="btn btn-primary btn-block">回答する</button>
+			        </div>
+			    </form>
+	    	</div>
+	    </div>
+    </th:block>
 </div>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-</body>
-</html>

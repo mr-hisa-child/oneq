@@ -8,5 +8,4 @@ import com.oneq.entity.Question;
 @Repository
 public interface QuestionRepository extends JpaRepository<Question,Long>{
 	public Question findByPath(final String path);
-	public Question findByPathAndPass(final String path,final String pass);
 }

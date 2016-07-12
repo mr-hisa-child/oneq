@@ -17,7 +17,6 @@ public class Answer {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	private String name;
 	private Date answerDate;
 	@ManyToOne
 	@JoinColumn(name = "questions_id")

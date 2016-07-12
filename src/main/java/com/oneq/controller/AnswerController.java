@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,14 @@ import com.oneq.util.Constant;
 import com.oneq.util.DateUtil;
 
 @Controller
+@RequestMapping(Constant.ControllerPath.ANSWER_ROOT)
 public class AnswerController {
+	
+	private static final String FORWARD_INDEX = "answer/index";
+	private static final String FORWARD_FORM = "answer/form";
+	private static final String FORWARD_COMPLETE = "answer/complete";
+	private static final String REDIRECT_FORM = "redirect:/answer/form";
+	private static final String REDIRECT_COMPLETE = "redirect:/answer/complete";
 	
 	@Autowired
     private AnswerService answerService;
@@ -45,34 +53,26 @@ public class AnswerController {
 	@Autowired
 	private QuestionService questionService;
 	
-	@RequestMapping(value = Constant.ControllerPath.ANSWER_ROOT,method = RequestMethod.GET)
-	public String index(@PathVariable("path") final String path,@ModelAttribute SigninForm signinForm){
-		Optional<Question> question = Optional.ofNullable(this.questionService.findByPath(path));
-		if(!question.isPresent()){
-			return "error/404";
-		}
-		return "answer/index";
+	@Autowired
+	private HttpSession session;
+	
+	@RequestMapping(method = RequestMethod.GET)
+	public String index(@ModelAttribute SigninForm signinForm){
+		return FORWARD_INDEX;
 	}
 	
-	@RequestMapping(value = Constant.ControllerPath.ANSWER_ROOT,method = RequestMethod.POST)
-	public String create(@PathVariable("path") final String path,@Validated @ModelAttribute final SigninForm form,final BindingResult bindingResult,final RedirectAttributes attributes){
+	@RequestMapping(method = RequestMethod.POST)
+	public String create(@Validated @ModelAttribute final SigninForm form,final BindingResult bindingResult){
 		
-		Optional<Question> question = Optional.ofNullable(this.questionService.findByPath(path));
+		Optional<Question> question = Optional.ofNullable(this.questionService.findByPath(form.getPath()));
 		if(!question.isPresent()){
-			return "error/404";
+			bindingResult.rejectValue("path",null,"入力されたOneQコードは存在しません");
+			return FORWARD_INDEX;
 		}
 		
-		if(!question.get().getPass().equals(form.getPass())){
-			bindingResult.reject("error.invalid.pass","default");
-			return "answer/index";
-		}
+		session.setAttribute("path", form.getPath());
 		
-		return new StringBuilder()
-				.append(Constant.REDIRECT)
-				.append(Constant.SEP_SLASH)
-				.append(path)
-				.append("/answer/form")
-				.toString();
+		return REDIRECT_FORM;
 	}
 
 	/**
@@ -80,17 +80,23 @@ public class AnswerController {
 	 * @return アンケート登録画面
 	 */
 	@RequestMapping(value=Constant.ControllerPath.ANSWER_FORM,method = RequestMethod.GET)
-	public String form(@PathVariable("path") final String path,@ModelAttribute AnswerForm answerForm,final Model model){
+	public String form(@ModelAttribute AnswerForm answerForm,final Model model){
+		
+		String path = (String)session.getAttribute("path");
+		
 		Optional<Question> question = Optional.ofNullable(this.questionService.findByPath(path));
 		
 		if(!question.isPresent()){
-			// error
+			return Constant.PAGE_404;
 		}
+		
 		model.addAttribute("question",question.get().content);
+		
 		Map<Long,String> choices = new LinkedHashMap<>();
 		question.get().getChoices().stream().forEach(c -> choices.put(c.getId(), c.getContent()));
 		model.addAttribute("choices",choices);
-		return "answer/form";
+		
+		return FORWARD_FORM;
 	}
 	
 	/**
@@ -98,34 +104,31 @@ public class AnswerController {
 	 * @return リダイレクト先
 	 */
 	@RequestMapping(value = Constant.ControllerPath.ANSWER_SEND,method = RequestMethod.POST)
-	public String update(@PathVariable("path") final String path,@Validated @ModelAttribute final AnswerForm form,final BindingResult bindingResult){
+	public String update(@Validated @ModelAttribute final AnswerForm form,final BindingResult bindingResult){
+		
+		String path = (String)session.getAttribute("path");
 		
 		Optional<Question> question = Optional.ofNullable(this.questionService.findByPath(path));
 		
 		if(!question.isPresent()){
-			// error
+			return Constant.PAGE_404;
 		}
 		
 		if (bindingResult.hasErrors()) {
-            return "answer/index";
+            return FORWARD_FORM;
         }
+		
+		final List<Choice> choices = new ArrayList<>();
+		form.getChoices().stream().forEach(c -> choices.add(new Choice(c)));
 		
 		Answer answer = new Answer();
 		answer.setQuestion(question.get());
 		answer.setAnswerDate(DateUtil.now());
-		answer.setName(form.getName());
-		final List<Choice> choices = new ArrayList<>();
-		form.getChoices().stream().forEach(c -> choices.add(new Choice(c)));
 		answer.setChoices(choices);
 		
 		this.answerService.create(answer);
 		
-		return new StringBuilder()
-				.append(Constant.REDIRECT)
-				.append(Constant.SEP_SLASH)
-				.append(path)
-				.append("/answer/complete")
-				.toString();
+		return REDIRECT_COMPLETE;
 	}
 	
 	/**
@@ -133,8 +136,9 @@ public class AnswerController {
 	 * @return 完了画面
 	 */
 	@RequestMapping(value = Constant.ControllerPath.ANSWER_COMPLETE,method = RequestMethod.GET)
-	public String complete(@PathVariable("path") final String path){
-		return "answer/complete";
+	public String complete(){
+		session.invalidate();
+		return FORWARD_COMPLETE;
 	}
 	
 }

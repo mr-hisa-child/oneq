@@ -1,0 +1,7 @@
+Optional<Question> question = Optional.ofNullable(this.questionService.findByPath(form.getPath()));
+if(!question.isPresent()){
+	bindingResult.rejectValue("path",null,"入力されたOneQコードは存在しません");
+	return FORWARD_INDEX;
+}
+
+session.setAttribute("path", form.getPath());

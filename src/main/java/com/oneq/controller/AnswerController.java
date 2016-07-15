@@ -62,16 +62,7 @@ public class AnswerController {
 	}
 	
 	@RequestMapping(method = RequestMethod.POST)
-	public String create(@Validated @ModelAttribute final SigninForm form,final BindingResult bindingResult){
-		
-		Optional<Question> question = Optional.ofNullable(this.questionService.findByPath(form.getPath()));
-		if(!question.isPresent()){
-			bindingResult.rejectValue("path",null,"入力されたOneQコードは存在しません");
-			return FORWARD_INDEX;
-		}
-		
-		session.setAttribute("path", form.getPath());
-		
+	public String create(@Validated @ModelAttribute final SigninForm form,final BindingResult bindingResult){	
 		return REDIRECT_FORM;
 	}
 
@@ -81,21 +72,6 @@ public class AnswerController {
 	 */
 	@RequestMapping(value=Constant.ControllerPath.ANSWER_FORM,method = RequestMethod.GET)
 	public String form(@ModelAttribute AnswerForm answerForm,final Model model){
-		
-		String path = (String)session.getAttribute("path");
-		
-		Optional<Question> question = Optional.ofNullable(this.questionService.findByPath(path));
-		
-		if(!question.isPresent()){
-			return Constant.PAGE_404;
-		}
-		
-		model.addAttribute("question",question.get().content);
-		
-		Map<Long,String> choices = new LinkedHashMap<>();
-		question.get().getChoices().stream().forEach(c -> choices.put(c.getId(), c.getContent()));
-		model.addAttribute("choices",choices);
-		
 		return FORWARD_FORM;
 	}
 	
@@ -105,29 +81,6 @@ public class AnswerController {
 	 */
 	@RequestMapping(value = Constant.ControllerPath.ANSWER_SEND,method = RequestMethod.POST)
 	public String update(@Validated @ModelAttribute final AnswerForm form,final BindingResult bindingResult){
-		
-		String path = (String)session.getAttribute("path");
-		
-		Optional<Question> question = Optional.ofNullable(this.questionService.findByPath(path));
-		
-		if(!question.isPresent()){
-			return Constant.PAGE_404;
-		}
-		
-		if (bindingResult.hasErrors()) {
-            return FORWARD_FORM;
-        }
-		
-		final List<Choice> choices = new ArrayList<>();
-		form.getChoices().stream().forEach(c -> choices.add(new Choice(c)));
-		
-		Answer answer = new Answer();
-		answer.setQuestion(question.get());
-		answer.setAnswerDate(DateUtil.now());
-		answer.setChoices(choices);
-		
-		this.answerService.create(answer);
-		
 		return REDIRECT_COMPLETE;
 	}
 	
@@ -137,7 +90,6 @@ public class AnswerController {
 	 */
 	@RequestMapping(value = Constant.ControllerPath.ANSWER_COMPLETE,method = RequestMethod.GET)
 	public String complete(){
-		session.invalidate();
 		return FORWARD_COMPLETE;
 	}
 	

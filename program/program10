@@ -1,0 +1,26 @@
+final String path = (String)session.getAttribute("path");
+Optional<Question> question = Optional.ofNullable(this.questionService.findByPath(path));
+
+if(!question.isPresent()){
+	return Constant.PAGE_404;
+}
+
+if(bindingResult.hasErrors()){
+	return FORWARD_FORM;
+}
+
+Question entry = question.get();
+entry.setContent(form.getContent());
+this.questionService.update(entry);
+
+this.choiceService.deleteAll(entry.getId());
+
+List<Choice> choices = new ArrayList<>();
+form.getChoices().stream().forEach(c -> {
+	Choice choice = new Choice();
+	choice.setContent(c);
+	choice.setQuestion(entry);
+	choices.add(choice);
+});
+this.choiceService.craete(choices);
+		

@@ -1,0 +1,3 @@
+signupForm.setPath(questionService.getGeneratePath());
+System.out.println(request.getRequestURL());
+model.addAttribute("url",request.getRequestURL());

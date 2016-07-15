@@ -1,0 +1,13 @@
+String path = (String)session.getAttribute("path");
+		
+Optional<Question> question = Optional.ofNullable(this.questionService.findByPath(path));
+
+if(!question.isPresent()){
+	return Constant.PAGE_404;
+}
+
+model.addAttribute("question",question.get().content);
+
+Map<Long,String> choices = new LinkedHashMap<>();
+question.get().getChoices().stream().forEach(c -> choices.put(c.getId(), c.getContent()));
+model.addAttribute("choices",choices);

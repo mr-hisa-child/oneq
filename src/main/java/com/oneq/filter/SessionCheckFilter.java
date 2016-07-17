@@ -60,7 +60,8 @@ public class SessionCheckFilter implements Filter {
 	}
 	
 	private boolean exclude(final HttpServletRequest req){
-		return req.getRequestURI().equals(req.getContextPath() + "/answer") 
+		return req.getRequestURI().equals(req.getContextPath() + "/")
+				|| req.getRequestURI().equals(req.getContextPath() + "/answer") 
 				|| req.getRequestURI().equals(req.getContextPath() + "/question")
 				|| req.getRequestURI().equals(req.getContextPath() + "/question/create")
 				|| req.getRequestURI().equals(req.getContextPath() + "/question/signin");

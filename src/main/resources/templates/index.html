@@ -2,7 +2,7 @@
     <th:block layout:fragment="layout-content">
         <div class="row">
 	    	<div class="col-xs-offset-3 col-xs-6">
-				<form role="form" th:action="@{/question/create}" th:object="${signupForm}" method="post">
+				<form role="form" th:action="@{/}" th:object="${signupForm}" method="post">
 				    <div class="form-group">
 				        <label for="path">OneQコード</label>
 				        <input type="text" class="form-control" th:field="*{path}" name="path" id="path"/>
@@ -14,15 +14,12 @@
 				        <p th:if="${#fields.hasErrors('adminPass')}" th:errors="*{adminPass}" class="text-danger"></p>
 				    </div>
 				    <div class="col-xs-offset-3 col-xs-6">
-				    	<button type="submit" class="btn btn-success btn-block">作成</button>
+				    	<button type="submit" class="btn btn-success btn-block" name="create">作成する</button>
+				    	<button type="submit" class="btn btn-primary btn-block" name="summary">結果を閲覧する</button>
+				    	<button type="submit" class="btn btn-warning btn-block" name="answer">回答する</button>
 				    </div>
 				</form>
 				
-			</div>
-		</div>
-		<div class="row" style="margin-top:20px">
-			<div class="col-xs-offset-3 col-xs-6">
-				<p>作成済みの質問を確認する場合は<a th:href="@{/question/signin}">こちら</a></p>    	
 			</div>
 		</div>
     </th:block>

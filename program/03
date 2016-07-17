@@ -1,0 +1,6 @@
+final String path = (String) session.getAttribute("path");
+Optional<Question> question = Optional.ofNullable(this.questionService.findByPath(path));
+
+if (!question.isPresent()) {
+	return Constant.PAGE_404;
+}

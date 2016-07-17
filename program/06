@@ -1,0 +1,21 @@
+String path = (String) session.getAttribute("path");
+
+Optional<Question> question = Optional.ofNullable(this.questionService.findByPath(path));
+
+if (!question.isPresent()) {
+	return Constant.PAGE_404;
+}
+
+if (bindingResult.hasErrors()) {
+	return FORWARD_FORM;
+}
+
+final List<Choice> choices = new ArrayList<>();
+form.getChoices().stream().forEach(c -> choices.add(new Choice(c)));
+
+Answer answer = new Answer();
+answer.setQuestion(question.get());
+answer.setAnswerDate(DateUtil.now());
+answer.setChoices(choices);
+
+this.answerService.create(answer);

@@ -1,0 +1,16 @@
+if (bindingResult.hasErrors()) {
+	return FORWARD_INDEX;
+}
+
+Optional<Question> question = Optional.ofNullable(this.questionService.findByPath(signupForm.getPath()));
+if (question.isPresent()) {
+	bindingResult.rejectValue("path", null, "別のコードを入力してください");
+	return FORWARD_INDEX;
+}
+
+final Question entity = new Question();
+entity.setPath(signupForm.getPath());
+entity.setAdminPass(signupForm.getAdminPass());
+this.questionService.create(entity);
+
+session.setAttribute("path", signupForm.getPath());
